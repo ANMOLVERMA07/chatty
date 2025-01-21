@@ -1,0 +1,84 @@
+import User from "../models/auth.model.js";
+import {StatusCodes} from "http-status-codes";
+import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken.js";
+
+export const signup = async(req,res) => {
+    const {fullName,email,password} = req.body;
+    try {
+        if(!fullName || !email || !password){
+            return res.status(StatusCodes.BAD_REQUEST).json({"message":"All Fields are required"});
+        }
+
+        const isEmail = await User.findOne({email});
+        if(isEmail){
+            return res.status(StatusCodes.BAD_REQUEST).json({"message":"Already account exist.Please Login"});
+        }
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password,salt);
+
+        const newUser = new User({
+            fullName,
+            email,
+            password:hashedPassword,
+        });
+
+        if(newUser){
+            await newUser.save();
+            generateToken(newUser._id,res);
+
+            res.status(StatusCodes.CREATED).json({
+                _id:newUser._id,
+                fullName:newUser.fullName,
+                email:newUser.email,
+            });
+        }else{
+            res.status(StatusCodes.BAD_REQUEST).json({message: "Invalid user data"});
+        }
+
+    } catch (error) {
+        console.log("Error in signup controller",error.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
+    }
+};
+
+export const login = async(req,res) => {
+    const {email,password} = req.body;
+    try {
+        if(!email || !password){
+            return res.status(StatusCodes.BAD_REQUEST).json("All fields are required");
+        }
+
+        const user = await User.findOne({email});
+        if(!user){
+            return res.status(StatusCodes.NOT_FOUND).json({"message":"Please Signup First"});
+        }
+
+        const debug = bcrypt.compare(password,user.password);
+        if(!debug){
+            return res.status(StatusCodes.BAD_REQUEST).json({"message":"Incorrect Password"});
+        }
+
+        generateToken(user._id,res);
+        res.status(StatusCodes.ACCEPTED).json({
+            _id:user._id,
+            fullName:user.fullName,
+            email:user.email,
+            profilePic: user.profilePic,
+        });
+    } catch (error) {
+        console.log("Error in login controller",error.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
+    }
+};
+
+export const logout = (req,res) => {
+    try {
+        res.cookie("jwt","",{maxAge:0});
+        res.status(StatusCodes.OK).json({"message":"Logged out successfully"});
+    } catch (error) {
+        console.log("Error in logout controller",error.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
+    }
+}
