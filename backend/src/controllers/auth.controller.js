@@ -82,3 +82,31 @@ export const logout = (req,res) => {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
     }
 }
+
+export const checkAuth = (req,res) => {
+    try {
+        res.status(StatusCodes.OK).json(req.user);
+    } catch (error) {
+        console.log("Error in checkAuth controller",error.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
+    }
+}
+
+export const updateProfile = async(req,res) => {
+    try {
+        const {profilePic} = req.body;
+        const userId = req.user._id;
+
+        if(!profilePic){
+            return res.status(StatusCodes.BAD_REQUEST).json({"message":"profile picture not found"});
+        }
+
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const selectedUser = await User.findOneAndUpdate(userId,{profilePicture:uploadResponse.secure_url},{new:true});
+
+        res.status(StatusCodes.OK).json(selectedUser);
+    } catch (error) {
+        console.log("Error in update-profile controller",error.message);
+        res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
+    }
+}
