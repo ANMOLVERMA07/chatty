@@ -1,6 +1,7 @@
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
+import { connectDB } from "./utils/db.js";
 
 dotenv.config();
 import authRoutes from "./routes/auth.route.js";
@@ -18,5 +19,6 @@ app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
 
 app.listen(PORT, () => {
-    console.log(`SERVER IS STARTED AT PORT:${PORT}`);   
+    console.log(`SERVER IS STARTED AT PORT:${PORT}`);
+    connectDB();   
 })
