@@ -1,6 +1,7 @@
 import Message from "../models/message.model.js";
 import User from "../models/auth.model.js";
 import { StatusCodes } from "http-status-codes";
+import cloudinary from "../utils/cloudinary.js";
 
 export const getMessages = async(req,res) => {
     try {

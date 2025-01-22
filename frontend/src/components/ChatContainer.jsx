@@ -15,7 +15,7 @@ const ChatContainer = () => {
     selectedUser,
     subscribeToMessages,
     unsubscribeFromMessages,
-  } = useChatStore();
+  } = messageStore();
   const { authUser } = authStore();
   const messageEndRef = useRef(null);
 

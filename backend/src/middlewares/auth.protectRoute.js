@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import User from "../models/auth.model";
+import User from "../models/auth.model.js";
 import jwt from "jsonwebtoken";
 import { StatusCodes } from "http-status-codes";
 

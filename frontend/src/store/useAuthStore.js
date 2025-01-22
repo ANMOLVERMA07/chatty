@@ -29,7 +29,7 @@ export const authStore = create((set) => ({
             set({ authUser:res.data});
             toast.success("Signup successfully");
         } catch (error) {
-            toast.error(error.response.data.message);
+            toast.error("signup");
         } finally {
             set({ isSigningUp:false });
         }
