@@ -8,12 +8,12 @@ export const signup = async(req,res) => {
     const {fullName,email,password} = req.body;
     try {
         if(!fullName || !email || !password){
-            return res.status(StatusCodes.BAD_REQUEST).json({"message":"All Fields are required"});
+            return res.status(StatusCodes.BAD_REQUEST).json({message:"All Fields are required"});
         }
 
         const isEmail = await User.findOne({email});
         if(isEmail){
-            return res.status(StatusCodes.BAD_REQUEST).json({"message":"Already account exist.Please Login"});
+            return res.status(StatusCodes.BAD_REQUEST).json({message:"Already account exist.Please Login"});
         }
 
         const salt = await bcrypt.genSalt(10);
@@ -53,12 +53,12 @@ export const login = async(req,res) => {
 
         const user = await User.findOne({email});
         if(!user){
-            return res.status(StatusCodes.NOT_FOUND).json({"message":"Please Signup First"});
+            return res.status(StatusCodes.NOT_FOUND).json({message:"Please Signup First"});
         }
 
         const debug = bcrypt.compare(password,user.password);
         if(!debug){
-            return res.status(StatusCodes.BAD_REQUEST).json({"message":"Incorrect Password"});
+            return res.status(StatusCodes.BAD_REQUEST).json({message:"Incorrect Password"});
         }
 
         generateToken(user._id,res);
@@ -95,14 +95,14 @@ export const checkAuth = (req,res) => {
 
 export const updateProfile = async(req,res) => {
     try {
-        const {profilePic} = req.body;
+        const {profilePicture} = req.body;
         const userId = req.user._id;
 
-        if(!profilePic){
-            return res.status(StatusCodes.BAD_REQUEST).json({"message":"profile picture not found"});
+        if(!profilePicture){
+            return res.status(StatusCodes.BAD_REQUEST).json({message:"profile picture not found"});
         }
 
-        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+        const uploadResponse = await cloudinary.uploader.upload(profilePicture);
         const selectedUser = await User.findOneAndUpdate(userId,{profilePicture:uploadResponse.secure_url},{new:true});
 
         res.status(StatusCodes.OK).json(selectedUser);
