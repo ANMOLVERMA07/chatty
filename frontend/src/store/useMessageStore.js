@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import { axiosInstance } from "../utils/axiosInstance";
 import { toast } from "react-hot-toast";
-import { Socket } from "socket.io-client";
 import { authStore } from "./useAuthStore.js";
 
 export const messageStore = create((set,get) => ({

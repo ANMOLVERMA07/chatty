@@ -9,10 +9,10 @@ import { Loader } from 'lucide-react';
 
 const App = () => {
   const {authUser,checkAuth,isCheckingAuth,onlineUsers} = authStore();
-  const {theme,setTheme} = themeStore();
+  const {theme} = themeStore();
 
   console.log("Online Users",{onlineUsers});
-  console.log("Auth User",authUser);
+  console.log("Auth User",{authUser});
   
 
   useEffect(() => {

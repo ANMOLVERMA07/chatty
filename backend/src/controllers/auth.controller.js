@@ -11,6 +11,10 @@ export const signup = async(req,res) => {
             return res.status(StatusCodes.BAD_REQUEST).json({message:"All Fields are required"});
         }
 
+        if(password.length < 6){
+            return res.status(StatusCodes.BAD_REQUEST).json({message:"Password must be atleast 6 characters"});
+        }
+
         const isEmail = await User.findOne({email});
         if(isEmail){
             return res.status(StatusCodes.BAD_REQUEST).json({message:"Already account exist.Please Login"});
@@ -26,13 +30,14 @@ export const signup = async(req,res) => {
         });
 
         if(newUser){
-            await newUser.save();
             generateToken(newUser._id,res);
+            await newUser.save();
 
             res.status(StatusCodes.CREATED).json({
                 _id:newUser._id,
                 fullName:newUser.fullName,
                 email:newUser.email,
+                profilePicture:newUser.profilePicture,
             });
         }else{
             res.status(StatusCodes.BAD_REQUEST).json({message: "Invalid user data"});
@@ -56,7 +61,7 @@ export const login = async(req,res) => {
             return res.status(StatusCodes.NOT_FOUND).json({message:"Please Signup First"});
         }
 
-        const debug = bcrypt.compare(password,user.password);
+        const debug = await bcrypt.compare(password,user.password);
         if(!debug){
             return res.status(StatusCodes.BAD_REQUEST).json({message:"Incorrect Password"});
         }
@@ -66,7 +71,7 @@ export const login = async(req,res) => {
             _id:user._id,
             fullName:user.fullName,
             email:user.email,
-            profilePic: user.profilePic,
+            profilePicture:user.profilePicture,
         });
     } catch (error) {
         console.log("Error in login controller",error.message);
@@ -77,7 +82,7 @@ export const login = async(req,res) => {
 export const logout = (req,res) => {
     try {
         res.cookie("jwt","",{maxAge:0});
-        res.status(StatusCodes.OK).json({"message":"Logged out successfully"});
+        res.status(StatusCodes.OK).json({message:"Logged out successfully"});
     } catch (error) {
         console.log("Error in logout controller",error.message);
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({message: "Internal Server Error"}); 
@@ -103,7 +108,7 @@ export const updateProfile = async(req,res) => {
         }
 
         const uploadResponse = await cloudinary.uploader.upload(profilePicture);
-        const selectedUser = await User.findOneAndUpdate(userId,{profilePicture:uploadResponse.secure_url},{new:true});
+        const selectedUser = await User.findByIdAndUpdate(userId,{profilePicture:uploadResponse.secure_url},{new:true});
 
         res.status(StatusCodes.OK).json(selectedUser);
     } catch (error) {

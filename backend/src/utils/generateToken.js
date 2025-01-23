@@ -5,12 +5,19 @@ export const generateToken = (userId,res) => {
         expiresIn:"7d",
     });
 
-    res.cookie("jwt",token,{
-        maxAge: 7*24*60*60*1000, // milliseconds
-        httpOnly: true, // prevent XSS attacks cross-site scripting attacks
-        sameSite: "strict", // CSRF attacks cross-site request forgery attacks
-        secure: process.env.NODE_ENV === "production"
-    });
+    // console.log("token",token);
+    
 
+    res.cookie("jwt", token, {
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
+        httpOnly: true, 
+        sameSite: "Lax", 
+        secure: process.env.NODE_ENV !== "production",
+        path: "/", // Ensure path is correct
+        domain: "localhost" // Adjust domain if necessary
+    });
+    // console.log("this");
+    
+    // console.log("Set-Cookie Header:", res.getHeader('Set-Cookie'));
     return token;
 }

@@ -7,8 +7,8 @@ import { io } from "../utils/socket.js";
 
 export const getMessages = async(req,res) => {
     try {
-        const {id:myId} = req.params.id;
-        const loginUserId = req.user._id;
+        const {id:loginUserId} = req.params.id;
+        const myId = req.user._id;
 
         const messages = await Message.find({
             $or:[
@@ -39,17 +39,17 @@ export const getUsersForSidebar = async(req,res) => {
 export const sendMessage = async(req,res) => {
     try {
         const {text,image} = req.body;
-        const myId = req.user._id;
-        const samneWalekiId = req.params.id;
+        const senderId = req.user._id;
+        const {id:receiverId} = req.params;
 
         let imageUrl;
-        if(imageUrl){
+        if(image){
             const uploadedResponse = await cloudinary.uploader.upload(image);
-            imageUrl = uploadResponse.secure_url;
+            imageUrl = uploadedResponse.secure_url;
         }
         const newMessage = new Message({
-            senderId:myId,
-            receiverId:samneWalekiId,
+            senderId,
+            receiverId,
             text,
             image:imageUrl
         });

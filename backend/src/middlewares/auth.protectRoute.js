@@ -1,13 +1,20 @@
 import User from "../models/auth.model.js";
 import jwt from "jsonwebtoken";
-import { StatusCodes } from "http-status-codes";
 
 export const protectRoute = async(req,res,next) => {
+
     try {
+        console.log("Cookies:", req.cookies); // Log cookies
         const token = req.cookies.jwt;
 
+        console.log("Request Headers:", req.headers); // Log request headers
+
+        
+        console.log("Token from Cookies:", token); // Log token
+        
+
         if(!token){
-            return res.status(401).json({error : "Unauthorized - No Token Provided"});
+            return res.status(401).json({message : "Unauthorized - No Token Provided"});
         }
 
         const decoded = jwt.verify(token,process.env.JWT_SECRET_KEY);
