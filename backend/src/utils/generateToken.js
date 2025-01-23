@@ -12,9 +12,9 @@ export const generateToken = (userId,res) => {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         httpOnly: true, 
         sameSite: "Lax", 
-        secure: process.env.NODE_ENV !== "production",
-        path: "/", // Ensure path is correct
-        domain: "localhost" // Adjust domain if necessary
+        secure: process.env.NODE_ENV === "production",
+        // path: "/", // Ensure path is correct
+        domain: "https://chatty-edrt.onrender.com/" // Adjust domain if necessary
     });
     // console.log("this");
     

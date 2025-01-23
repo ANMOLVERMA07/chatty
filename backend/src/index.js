@@ -16,7 +16,7 @@ app.use(cookieParser());
 
 app.use(
     cors({
-      origin: "http://localhost:5173",
+      origin: "http://localhost:5173" || "https://chatty-edrt.onrender.com/",
       credentials: true,
     })
 );
@@ -26,17 +26,21 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 const PORT = process.env.PORT || 8888;
 const __dirname = path.resolve();
 
+app.get("/", (req, res) => {
+  res.send("Welcome to Chatty!");
+});
 app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
 
-if(process.env.NODE_ENV==="production"){
-  app.use(express.static(path.join(__dirname,"../frontend/dist")));
+app.use(express.static(path.join(__dirname,"../frontend/dist")));
+// if(process.env.NODE_ENV==="production"){
 
 
-  app.get("*",(req,res) => {
-    res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
-  })
-}
+  
+// }
+app.get("*",(req,res) => {
+  res.sendFile(path.join(__dirname,"../frontend","dist","index.html"));
+})
 
 server.listen(PORT, () => {
     console.log(`SERVER IS STARTED AT PORT:${PORT}`);
