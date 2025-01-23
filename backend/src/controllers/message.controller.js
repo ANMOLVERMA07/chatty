@@ -7,7 +7,7 @@ import { io } from "../utils/socket.js";
 
 export const getMessages = async(req,res) => {
     try {
-        const {id:loginUserId} = req.params.id;
+        const {id:loginUserId} = req.params;
         const myId = req.user._id;
 
         const messages = await Message.find({
