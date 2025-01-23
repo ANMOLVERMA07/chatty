@@ -14,7 +14,7 @@ export const generateToken = (userId,res) => {
         sameSite: "strict", 
         secure: process.env.NODE_ENV !== "development",
         // path: "/", // Ensure path is correct
-        domain: "https://chatty-edrt.onrender.com/" // Adjust domain if necessary
+        // domain: "https://chatty-edrt.onrender.com/" // Adjust domain if necessary
     });
     console.log("this");
     
