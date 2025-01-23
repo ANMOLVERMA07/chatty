@@ -26,9 +26,9 @@ app.use(express.urlencoded({ limit: '10mb', extended: true }));
 const PORT = process.env.PORT || 8888;
 const __dirname = path.resolve();
 
-app.get("/", (req, res) => {
-  res.send("Welcome to Chatty!");
-});
+// app.get("/", (req, res) => {
+//   res.send("Welcome to Chatty!");
+// });
 app.use("/api/auth",authRoutes);
 app.use("/api/message",messageRoutes);
 
