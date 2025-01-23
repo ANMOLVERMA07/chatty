@@ -5,19 +5,19 @@ export const generateToken = (userId,res) => {
         expiresIn:"7d",
     });
 
-    // console.log("token",token);
+    console.log("token",token);
     
 
     res.cookie("jwt", token, {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days in milliseconds
         httpOnly: true, 
-        sameSite: "Lax", 
-        // secure: process.env.NODE_ENV !== "production",
+        sameSite: "strict", 
+        secure: process.env.NODE_ENV !== "development",
         // path: "/", // Ensure path is correct
         domain: "https://chatty-edrt.onrender.com/" // Adjust domain if necessary
     });
-    // console.log("this");
+    console.log("this");
     
-    // console.log("Set-Cookie Header:", res.getHeader('Set-Cookie'));
+    console.log("Set-Cookie Header:", res.getHeader('Set-Cookie'));
     return token;
 }
